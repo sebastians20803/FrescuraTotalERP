@@ -59,6 +59,48 @@ public class ProveedorDAO {
 
     }
 
+    public Proveedor buscarPorId(int id) throws SQLException{
+        String sql = "Select * FROM proveedores WHERE id_proveedor = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return new Proveedor(rs.getInt("id_proveedor"),
+                            rs.getString("nombre"),
+                            rs.getString("nit"),
+                            rs.getString("persona_contacto"),
+                            rs.getString("email"),
+                            rs.getString("telefono"),
+                            rs.getString("direccion"),
+                            rs.getBoolean("activo"),
+                            rs.getObject("fecha_registro", LocalDateTime.class));
+
+                }else {
+                    return null;
+                }
+
+            }
+
+        }
+
+    }
+
+//    private Proveedor convertirFila(ResultSet rs) throws SQLException {
+//        return new Proveedor(rs.getInt("id_proveedor"),
+//                rs.getString("nombre"),
+//                rs.getString("nit"),
+//                rs.getString("persona_contacto"),
+//                rs.getString("email"),
+//                rs.getString("telefono"),
+//                rs.getString("direccion"),
+//                rs.getBoolean("activo"),
+//                rs.getObject("fecha_registro", LocalDateTime.class));
+//    }
+
+
 
 
 
