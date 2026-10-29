@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ScannerUtils {
 
-    public static Scanner SCANNER = new Scanner(System.in);
+    private static Scanner SCANNER = new Scanner(System.in);
 
     public static String capturarTexto(String mensaje){
         System.out.println(mensaje + ": ");
@@ -17,7 +17,7 @@ public class ScannerUtils {
         System.out.println(mensaje + ": ");
 
         while(!SCANNER.hasNextInt()){
-            System.out.println("Dato no aceptado" + mensaje + ": ");
+            System.out.println("Dato no aceptado. " + mensaje + ": ");
             SCANNER.next();
         }
 
