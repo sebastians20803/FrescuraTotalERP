@@ -41,6 +41,64 @@ public class ScannerUtils {
 
     }
 
+    public static long capturarLong(String mensaje){
+        System.out.println(mensaje + ": ");
+
+        while(!SCANNER.hasNextLong()){
+            System.out.println("Dato no aceptado" + mensaje + ": ");
+            SCANNER.next();
+        }
+
+        long dato = SCANNER.nextLong();
+        SCANNER.nextLine();
+        return dato;
+
+    }
+
+    public static String capturarTextoOpcional(String mensaje,String valorActual){
+        System.out.println(mensaje + "["+valorActual+"]:");
+        String entrada = SCANNER.nextLine();
+
+        if (entrada.isBlank()){
+            return valorActual;
+        }else {
+            return entrada;
+        }
+
+    }
+
+    public static int capturarIntOpcional(String mensaje, int valorActual) {
+        while (true) {
+            System.out.print(mensaje + " [" + valorActual + "]: ");
+            String entrada = SCANNER.nextLine();
+
+            if (entrada.isBlank()) {
+                return valorActual;
+            }
+            try {
+                return Integer.parseInt(entrada.trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Debe ser un número.");
+            }
+        }
+    }
+
+    public static long capturarLongOpcional(String mensaje, long valorActual) {
+        while (true) {
+            System.out.print(mensaje + " [" + valorActual + "]: ");
+            String entrada = SCANNER.nextLine();
+
+            if (entrada.isBlank()) {
+                return valorActual;
+            }
+            try {
+                return Long.parseLong(entrada.trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Debe ser un número.");
+            }
+        }
+    }
+
 
 }
 

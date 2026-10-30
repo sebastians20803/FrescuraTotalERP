@@ -88,6 +88,7 @@ public class ProveedorDAO {
 
     }
 
+
 //    private Proveedor convertirFila(ResultSet rs) throws SQLException {
 //        return new Proveedor(rs.getInt("id_proveedor"),
 //                rs.getString("nombre"),
@@ -99,6 +100,52 @@ public class ProveedorDAO {
 //                rs.getBoolean("activo"),
 //                rs.getObject("fecha_registro", LocalDateTime.class));
 //    }
+
+    public boolean desactivarProveedor(int id) throws SQLException{
+        String sql = "UPDATE proveedores SET activo = false WHERE id_proveedor = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+        }
+
+    }
+
+    public boolean actualizarProveedor(Proveedor p) throws SQLException{
+        String sql = "UPDATE proveedores " +
+                "SET nombre = ?, " +
+                "nit = ?, " +
+                "persona_contacto = ?, " +
+                "email = ?, " +
+                "telefono = ?, " +
+                "direccion = ? " +
+                "WHERE id_proveedor = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, p.getNombre());
+            ps.setString(2, p.getNit());
+            ps.setString(3, p.getPersonaContacto());
+            ps.setString(4, p.getEmail());
+            ps.setString(5, p.getTelefono());
+            ps.setString(6, p.getDireccion());
+            ps.setInt(7, p.getIdProveedor());
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+
+
+
+        }
+
+
+
+    }
+
+
 
 
 

@@ -46,13 +46,66 @@ public class ProveedorController {
         }
     }
 
-    public List<Proveedor> ListarProveedores(){
+    public List<Proveedor> listarProveedores(){
         try {
             return dao.listarTodos();
         }catch (SQLException e){
             System.out.println("Error al listar: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    public boolean desactivarProveedor(int id){
+        try {
+            return dao.desactivarProveedor(id);
+        }   catch (SQLException e){
+            System.out.println("Error al desactivar: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String actualizarProveedor(Proveedor p){
+        if (p.getNombre() == null || p.getNombre().isBlank()) {
+            return  ("Nombre inválido");
+        }
+        if (!p.getNit().matches("[0-9]{9}-[0-9]")){
+            return  ("Nit inválido: Ejemplo de formato correcto: 123456789-0 ");
+        }
+        if (p.getPersonaContacto() == null || p.getPersonaContacto().isBlank()) {
+            return  ("Nombre inválido para persona de contacto. ");
+        }
+        if (!p.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            return ("Correo no es válido. ");
+        }
+        if (!p.getTelefono().matches("[0-9]{10}")){
+            return  ("Telefono inválido: Debe contener 10 numeros exactamente. ");
+        }
+        if (p.getDireccion() == null || p.getDireccion().isBlank()) {
+            return  ("Direccion inválida. ");
+        }
+
+        try {
+            if(dao.actualizarProveedor(p)){
+                return ("Proveedor Actualizado Correctamente!");
+            }else {
+                return ("No existe un proveedor con ese ID.");
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return "Ya existe otro proveedor con ese NIT.";
+        } catch (SQLException e){
+            return "Error al actualizar: " + e.getMessage();
+        }
+
+    }
+
+    public Proveedor buscarPorId(int id){
+        try {
+            return dao.buscarPorId(id);
+        }catch (SQLException e){
+            System.out.println("Error al buscar: " + e.getMessage());
+            return null;
+        }
+
     }
 
 }
