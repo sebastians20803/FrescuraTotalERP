@@ -1,5 +1,8 @@
 package com.frescuratotal.erp.common;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class ScannerUtils {
@@ -63,6 +66,21 @@ public class ScannerUtils {
             return valorActual;
         }else {
             return entrada;
+        }
+
+    }
+    public static LocalDate  capturarFecha (String mensaje){
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        while (true) {
+            System.out.print(mensaje + " (dd/MM/yyyy): ");
+            String entrada = SCANNER.nextLine();
+
+            try {
+                return LocalDate.parse(entrada.trim(), formato);
+            } catch (DateTimeParseException e) {
+                System.out.println("Fecha no válida. Ejemplo: 20/11/2026");
+            }
         }
 
     }

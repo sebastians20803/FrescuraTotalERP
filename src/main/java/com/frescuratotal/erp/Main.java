@@ -3,6 +3,7 @@ package com.frescuratotal.erp;
 import com.frescuratotal.erp.common.ScannerUtils;
 import com.frescuratotal.erp.inventory.model.Categoria;
 import com.frescuratotal.erp.inventory.model.CategoriaDAO;
+import com.frescuratotal.erp.inventory.view.InventarioVista;
 import com.frescuratotal.erp.inventory.view.ProductoVista;
 import com.frescuratotal.erp.suppliers.model.ProveedorDAO;
 import com.frescuratotal.erp.suppliers.view.ProveedorVista;
@@ -15,6 +16,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         ProveedorVista proveedorV =  new ProveedorVista();
         ProductoVista productoVista = new ProductoVista();
+        InventarioVista inventarioVista = new InventarioVista();
 
 
 
@@ -38,7 +40,7 @@ public class Main {
                     proveedorV.mostrarMenu();
                 }
                 case 2->{
-                    productoVista.mostrarMenu();
+                    inventarioVista.mostrarMenu();
                 }
                 case 3->{
                     return;
