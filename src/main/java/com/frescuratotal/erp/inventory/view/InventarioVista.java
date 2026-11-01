@@ -28,9 +28,9 @@ public class InventarioVista {
                     loteVista.mostrarMenu();
                 }
                 case 0->{
-                    System.out.println("Volviendo al menu anterior. ");
+                    System.out.println("Volviendo al menu anterior ");
                 }
-                default -> System.out.println("Opción no válida.");
+                default -> System.out.println("Opción no válida");
 
             }
         }while (opcion!=0);

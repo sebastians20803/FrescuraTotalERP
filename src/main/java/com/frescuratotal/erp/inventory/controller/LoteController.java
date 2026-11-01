@@ -42,10 +42,9 @@ public class LoteController {
         Lote lote = new Lote(numeroLote,idProducto,idProveedor,fechaVencimiento,cantidadInicial,precioCompra,precioVenta,pasillo,estante);
 
 
-        long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaVencimiento);
-        if (dias <= 7) {
-            lote.setEstadoLote(EstadoLote.PROXIMO_A_VENCER);
-        }
+
+        lote.setEstadoLote(calcularEstadoPorFecha(fechaVencimiento));
+
 
         try{
             Proveedor proveedor = proveedorDAO.buscarPorId(idProveedor);
@@ -86,6 +85,54 @@ public class LoteController {
             return null;
         }
 
+    }
+
+    private EstadoLote calcularEstadoPorFecha ( LocalDate fechaVencimiento){
+        long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaVencimiento);
+        if (dias < 0 ){
+            return EstadoLote.VENCIDO;
+        }
+        if ( dias <= 7){
+            return EstadoLote.PROXIMO_A_VENCER;
+        }
+        return EstadoLote.DISPONIBLE;
+    }
+
+    public String revisarVencimientos(){
+
+        int contadorVencidos = 0;
+        int contadorProximoAVencer = 0;
+
+        try {
+
+            List<Lote> lista = loteDAO.listarTodos();
+            if (lista.isEmpty()) {
+                return "No hay lotes registrados. Registre uno primero.";
+            }
+
+            for (Lote l : lista){
+                if (l.getEstadoLote() == EstadoLote.EN_CUARENTENA || l.getEstadoLote() == EstadoLote.VENCIDO) {
+                    continue;
+                }
+
+                EstadoLote nuevoEstado = calcularEstadoPorFecha(l.getFechaVencimiento());
+                if (nuevoEstado != l.getEstadoLote()){
+                     loteDAO.actualizarEstado(l.getIdLote(),nuevoEstado);
+                     if (nuevoEstado == EstadoLote.PROXIMO_A_VENCER){
+                        contadorProximoAVencer ++;
+                     }
+                     if (nuevoEstado == EstadoLote.VENCIDO){
+                        contadorVencidos++;
+                     }
+                }
+
+
+            }
+            return "Revision Completada: "+contadorProximoAVencer+" lote(s) pasaron a Proximo a Vencer, "+contadorVencidos+
+                    " lote(s) pasaron a Vencido";
+        } catch (SQLException e) {
+            return "Error al revisar vencimientos " + e.getMessage();
+        }
     }
 
 

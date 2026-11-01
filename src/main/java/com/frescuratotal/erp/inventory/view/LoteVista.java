@@ -3,6 +3,7 @@ package com.frescuratotal.erp.inventory.view;
 import com.frescuratotal.erp.common.ScannerUtils;
 import com.frescuratotal.erp.inventory.controller.LoteController;
 import com.frescuratotal.erp.inventory.controller.ProductoController;
+import com.frescuratotal.erp.inventory.controller.RegistroCuarentenaController;
 import com.frescuratotal.erp.inventory.model.Lote;
 import com.frescuratotal.erp.inventory.model.Producto;
 import com.frescuratotal.erp.suppliers.controller.ProveedorController;
@@ -15,6 +16,7 @@ public class LoteVista {
     private ProductoController productoController = new ProductoController();
     private ProveedorController proveedorController = new ProveedorController();
     private LoteController loteController = new LoteController();
+    private RegistroCuarentenaController registroCuarentenaController = new RegistroCuarentenaController();
 
     public void mostrarMenu(){
         int opcion;
@@ -26,6 +28,8 @@ public class LoteVista {
                     1. Recibir mercancía (registrar lote)
                     2. Listar lotes
                     3. Buscar lote por ID
+                    4. Revisar vencimientos.
+                    5. Poner lote en cuarentena.
                     0. Volver
                     """);
             opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar: ");
@@ -40,6 +44,13 @@ public class LoteVista {
                 }
                 case 3->{
                     buscarPorId();
+                }
+                case 4->{
+                    String mensaje = loteController.revisarVencimientos();
+                    System.out.println(mensaje);
+                }
+                case 5->{
+                    ponerLoteEnCuarentena();
                 }
                 case 0->{
                     System.out.println("Volviendo al menu anterior. ");
@@ -112,5 +123,21 @@ public class LoteVista {
 
     }
 
+    private void ponerLoteEnCuarentena(){
+        List<Lote> listaLote = loteController.listarLotes();
+        if (listaLote.isEmpty()) {
+            System.out.println("No hay lotes registrados. Registre uno primero.");
+            return;
+        }
+        for (Lote lote : listaLote) {
+            System.out.println(lote);
+        }
+        int idLote = ScannerUtils.capturarNumero("Digite el id del lote que desea registrar en cuarentena ");
+        String motivo = ScannerUtils.capturarTexto("Digite el motivo del registro ");
+        String usuario = ScannerUtils.capturarTexto("Digite el nombre del usuario que está registrando el lote ");
 
+        String mensaje = registroCuarentenaController.ponerEnCuarentena(idLote,motivo,usuario);
+        System.out.println(mensaje);
+
+    }
 }

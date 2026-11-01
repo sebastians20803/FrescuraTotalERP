@@ -86,6 +86,20 @@ public class LoteDAO {
         }
     }
 
+    public boolean actualizarEstado (int idLote, EstadoLote nuevoEstado) throws SQLException{
+        String sql = "UPDATE lotes_inventario SET id_estado = ? WHERE id_lote = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, nuevoEstado.getId());
+            ps.setInt(2, idLote);
+
+            int filas = ps.executeUpdate();
+            return filas > 0;
+        }
+
+    }
+
 
 
 }
