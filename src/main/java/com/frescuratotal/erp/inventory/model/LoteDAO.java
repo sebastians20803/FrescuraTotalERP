@@ -100,6 +100,42 @@ public class LoteDAO {
 
     }
 
+    public boolean actualizarCantidad (int idLote, double nuevaCantidad) throws SQLException{
+        String sql = "UPDATE lotes_inventario SET cantidad = ? WHERE id_lote = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setDouble(1, nuevaCantidad);
+            ps.setInt(2, idLote);
+
+            int filas = ps.executeUpdate();
+            return filas > 0;
+        }
+
+    }
+
+    public List<Lote> listarVendiblesPorProducto(int idProducto) throws SQLException {
+        List<Lote> lista = new ArrayList<>();
+        String sql = "SELECT * FROM lotes_inventario " +
+                "WHERE id_producto = ? AND id_estado IN (1, 2) AND cantidad > 0 " +
+                "ORDER BY fecha_vencimiento";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProducto);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(convertirFila(rs));
+                }
+            }
+        }
+        return lista;
+    }
+
+
+
+
 
 
 }

@@ -43,7 +43,7 @@ public class LoteController {
 
 
 
-        lote.setEstadoLote(calcularEstadoPorFecha(fechaVencimiento));
+        lote.setEstadoLote(EstadoLote.calcularEstadoPorFecha(fechaVencimiento));
 
 
         try{
@@ -87,16 +87,6 @@ public class LoteController {
 
     }
 
-    private EstadoLote calcularEstadoPorFecha ( LocalDate fechaVencimiento){
-        long dias = ChronoUnit.DAYS.between(LocalDate.now(), fechaVencimiento);
-        if (dias < 0 ){
-            return EstadoLote.VENCIDO;
-        }
-        if ( dias <= 7){
-            return EstadoLote.PROXIMO_A_VENCER;
-        }
-        return EstadoLote.DISPONIBLE;
-    }
 
     public String revisarVencimientos(){
 
@@ -115,7 +105,7 @@ public class LoteController {
                     continue;
                 }
 
-                EstadoLote nuevoEstado = calcularEstadoPorFecha(l.getFechaVencimiento());
+                EstadoLote nuevoEstado = EstadoLote.calcularEstadoPorFecha(l.getFechaVencimiento());
                 if (nuevoEstado != l.getEstadoLote()){
                      loteDAO.actualizarEstado(l.getIdLote(),nuevoEstado);
                      if (nuevoEstado == EstadoLote.PROXIMO_A_VENCER){

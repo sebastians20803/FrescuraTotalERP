@@ -1,9 +1,11 @@
 package com.frescuratotal.erp.inventory.view;
 
 import com.frescuratotal.erp.common.ScannerUtils;
+import com.frescuratotal.erp.inventory.controller.InspeccionController;
 import com.frescuratotal.erp.inventory.controller.LoteController;
 import com.frescuratotal.erp.inventory.controller.ProductoController;
 import com.frescuratotal.erp.inventory.controller.RegistroCuarentenaController;
+import com.frescuratotal.erp.inventory.model.EstadoLote;
 import com.frescuratotal.erp.inventory.model.Lote;
 import com.frescuratotal.erp.inventory.model.Producto;
 import com.frescuratotal.erp.suppliers.controller.ProveedorController;
@@ -17,6 +19,7 @@ public class LoteVista {
     private ProveedorController proveedorController = new ProveedorController();
     private LoteController loteController = new LoteController();
     private RegistroCuarentenaController registroCuarentenaController = new RegistroCuarentenaController();
+    private InspeccionController inspeccionController = new InspeccionController();
 
     public void mostrarMenu(){
         int opcion;
@@ -30,6 +33,7 @@ public class LoteVista {
                     3. Buscar lote por ID
                     4. Revisar vencimientos.
                     5. Poner lote en cuarentena.
+                    6. Inspeccionar lote en cuarentena.
                     0. Volver
                     """);
             opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar: ");
@@ -51,6 +55,9 @@ public class LoteVista {
                 }
                 case 5->{
                     ponerLoteEnCuarentena();
+                }
+                case 6->{
+                    inspeccionar();
                 }
                 case 0->{
                     System.out.println("Volviendo al menu anterior. ");
@@ -140,4 +147,50 @@ public class LoteVista {
         System.out.println(mensaje);
 
     }
+
+    private void inspeccionar(){
+        List<Lote> lista = loteController.listarLotes();
+        int contador = 0;
+        if (lista.isEmpty()){
+            System.out.println("No hay lotes registrados");
+            return;
+        }
+        for (Lote lote : lista){
+            if (lote.getEstadoLote() == EstadoLote.EN_CUARENTENA){
+                System.out.println(lote);
+                contador ++;
+            }
+        }
+        if (contador==0){
+            System.out.println("No hay lotes en Cuarentena");
+            return;
+        }
+
+
+        int idLote = ScannerUtils.capturarNumero("Digite el idLote a inspeccionar");
+
+        String r;
+        do {
+            r = ScannerUtils.capturarTexto("¿Aprobado? (s/n)").trim();
+        } while (!r.equalsIgnoreCase("s") && !r.equalsIgnoreCase("n"));
+        boolean aprobado = r.equalsIgnoreCase("s");
+
+        String nombreInspector = ScannerUtils.capturarTexto("Digite el nombre del inspector");
+
+        String motivoRechazo = null;
+
+        if(!aprobado){
+            motivoRechazo = ScannerUtils.capturarTexto("Escriba el motivo del rechazo");
+        }
+
+        String notas = ScannerUtils.capturarTexto("Digite las notas de la inspeccion.");
+
+        String mensaje = inspeccionController.inspeccionarLote(idLote,aprobado,nombreInspector,motivoRechazo,notas);
+        System.out.println(mensaje);
+
+
+
+
+    }
+
 }

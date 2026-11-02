@@ -1,15 +1,12 @@
 package com.frescuratotal.erp;
 
 import com.frescuratotal.erp.common.ScannerUtils;
-import com.frescuratotal.erp.inventory.model.Categoria;
-import com.frescuratotal.erp.inventory.model.CategoriaDAO;
 import com.frescuratotal.erp.inventory.view.InventarioVista;
 import com.frescuratotal.erp.inventory.view.ProductoVista;
-import com.frescuratotal.erp.suppliers.model.ProveedorDAO;
+import com.frescuratotal.erp.sales.view.VentaVista;
 import com.frescuratotal.erp.suppliers.view.ProveedorVista;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class Main {
 
@@ -17,6 +14,7 @@ public class Main {
         ProveedorVista proveedorV =  new ProveedorVista();
         ProductoVista productoVista = new ProductoVista();
         InventarioVista inventarioVista = new InventarioVista();
+        VentaVista ventaVista = new VentaVista();
 
 
 
@@ -43,7 +41,7 @@ public class Main {
                     inventarioVista.mostrarMenu();
                 }
                 case 3->{
-                    return;
+                    ventaVista.mostrarMenu();
                 }
                 case 4->{
                     return;

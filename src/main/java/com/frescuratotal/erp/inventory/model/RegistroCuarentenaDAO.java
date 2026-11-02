@@ -22,6 +22,23 @@ public class RegistroCuarentenaDAO {
         }
     }
 
+    public boolean resolver(int idLote, String notas) throws SQLException {
+        String sql = "UPDATE registro_cuarentena SET resuelta = true, fecha_resolucion = NOW(), notas_resolucion= ? " +
+                "WHERE id_lote = ? AND resuelta = false";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, notas);
+            ps.setInt(2, idLote);
+
+            int filas = ps.executeUpdate();
+            return filas > 0;
+        }
+
+
+
+
+    }
+
 
 
 }
