@@ -11,9 +11,8 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         ProveedorVista proveedorV =  new ProveedorVista();
-        ProductoVista productoVista = new ProductoVista();
         InventarioVista inventarioVista = new InventarioVista();
         VentaVista ventaVista = new VentaVista();
         LogisticaVista logisticaVista = new LogisticaVista();

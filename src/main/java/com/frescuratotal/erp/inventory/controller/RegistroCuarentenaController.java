@@ -29,8 +29,8 @@ public class RegistroCuarentenaController {
                 return "Solo se pueden poner en cuarentena lotes disponibles o próximos a vencer. Estado actual: "
                         + lote.getEstadoLote();
             }
-            loteDAO.actualizarEstado(idLote,EstadoLote.EN_CUARENTENA);
             registroCuarentenaDAO.insertarRegistroCuarentena(rC);
+            loteDAO.actualizarEstado(idLote,EstadoLote.EN_CUARENTENA);
             return "El lote " + lote.getNumeroLote() + " quedó en cuarentena. Bloqueado para la venta hasta su inspección.";
         }catch (SQLException e){
             return "Error al poner en cuarentena: " + e.getMessage();

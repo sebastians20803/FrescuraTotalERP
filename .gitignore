@@ -16,6 +16,7 @@ target/
 target/
 .idea/
 *.iml
+facturas/
 
 ### Eclipse ###
 .apt_generated

@@ -11,7 +11,7 @@ public class InventarioVista {
         do{
             System.out.println(""" 
                     -----------------------------------
-                                PRODUCTOS
+                                INVENTARIO
                     -----------------------------------
                     1. Productos
                     2. Lotes

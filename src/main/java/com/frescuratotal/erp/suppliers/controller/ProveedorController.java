@@ -68,9 +68,17 @@ public class ProveedorController {
         if (p.getNombre() == null || p.getNombre().isBlank()) {
             return  ("Nombre inválido");
         }
-        if (!p.getNit().matches("[0-9]{9}-[0-9]")){
-            return  ("Nit inválido: Ejemplo de formato correcto: 123456789-0 ");
+
+        try {
+            Proveedor original = dao.buscarPorId(p.getIdProveedor());
+            boolean nitCambio = original == null || !original.getNit().equals(p.getNit());
+            if (nitCambio && !p.getNit().matches("[0-9]{9}-[0-9]")) {
+                return "Nit inválido: Ejemplo de formato correcto: 123456789-0";
+            }
+        } catch (SQLException e) {
+            return "Error al validar el NIT: " + e.getMessage();
         }
+
         if (p.getPersonaContacto() == null || p.getPersonaContacto().isBlank()) {
             return  ("Nombre inválido para persona de contacto. ");
         }
