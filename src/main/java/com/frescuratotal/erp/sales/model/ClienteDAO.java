@@ -41,6 +41,7 @@ public class ClienteDAO {
             }
         }
     }
+
     public List<Cliente> listarTodos() throws SQLException{
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes";

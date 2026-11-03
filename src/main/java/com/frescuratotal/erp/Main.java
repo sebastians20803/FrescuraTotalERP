@@ -3,6 +3,7 @@ package com.frescuratotal.erp;
 import com.frescuratotal.erp.common.ScannerUtils;
 import com.frescuratotal.erp.inventory.view.InventarioVista;
 import com.frescuratotal.erp.inventory.view.ProductoVista;
+import com.frescuratotal.erp.logistics.view.LogisticaVista;
 import com.frescuratotal.erp.sales.view.VentaVista;
 import com.frescuratotal.erp.suppliers.view.ProveedorVista;
 
@@ -15,6 +16,7 @@ public class Main {
         ProductoVista productoVista = new ProductoVista();
         InventarioVista inventarioVista = new InventarioVista();
         VentaVista ventaVista = new VentaVista();
+        LogisticaVista logisticaVista = new LogisticaVista();
 
 
 
@@ -44,7 +46,7 @@ public class Main {
                     ventaVista.mostrarMenu();
                 }
                 case 4->{
-                    return;
+                    logisticaVista.mostrarMenu();
                 }
                 case 0->{
                     System.out.println("Saliendo del sistema. ");

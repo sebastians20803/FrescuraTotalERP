@@ -3,6 +3,9 @@ package com.frescuratotal.erp.sales.model;
 import com.frescuratotal.erp.common.DatabaseConnection;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentaDAO {
 
@@ -74,6 +77,67 @@ public class VentaDAO {
         }
     }
 
+    private Venta convertirFila(ResultSet rs) throws SQLException {
+        return new Venta(
+                rs.getInt("id_venta"),
+                rs.getString("numero_venta"),
+                rs.getInt("id_cliente"),
+                rs.getObject("fecha_venta", LocalDateTime.class),
+                rs.getLong("subtotal"),
+                rs.getLong("total_descuento"),
+                rs.getLong("total_impuesto"),
+                rs.getLong("monto_total"),
+                EstadoVenta.desdeId(rs.getInt("id_estado")),
+                rs.getString("usuario_registro")
+        );
+    }
 
+    public boolean actualizarEstado (int idVenta, EstadoVenta estado) throws SQLException{
+        String sql = "UPDATE ventas SET id_estado = ? WHERE id_venta = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, estado.getId());
+            ps.setInt(2, idVenta);
+
+            int filas = ps.executeUpdate();
+            return filas > 0;
+        }
+
+    }
+
+    public List<Venta> listarPorEstado(EstadoVenta estado) throws SQLException {
+        List<Venta> lista = new ArrayList<>();
+        String sql = "SELECT * FROM ventas WHERE id_estado = ? ORDER BY fecha_venta";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, estado.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(convertirFila(rs));
+                }
+            }
+        }
+        return lista;
+    }
+
+    public Venta buscarPorId(int id) throws SQLException{
+        String sql = "SELECT * FROM ventas WHERE id_venta = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return convertirFila(rs);
+                }else {
+                    return null;
+                }
+            }
+        }
+    }
 
 }
