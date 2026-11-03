@@ -4,6 +4,7 @@ import com.frescuratotal.erp.common.ScannerUtils;
 import com.frescuratotal.erp.inventory.controller.ProductoController;
 import com.frescuratotal.erp.inventory.model.Producto;
 import com.frescuratotal.erp.sales.controller.ClienteController;
+import com.frescuratotal.erp.sales.controller.FacturaController;
 import com.frescuratotal.erp.sales.controller.VentaController;
 import com.frescuratotal.erp.sales.model.Cliente;
 import com.frescuratotal.erp.sales.model.DetalleVenta;
@@ -16,7 +17,7 @@ public class VentaVista {
     private ClienteController clienteController = new ClienteController();
     private VentaController ventaController = new VentaController();
     private ProductoController productoController = new ProductoController();
-
+    private FacturaController facturaController = new FacturaController();
 
     public void mostrarMenu(){
         int opcion;
@@ -109,9 +110,15 @@ public class VentaVista {
         boolean aprobado = r.equalsIgnoreCase("s");
         if(aprobado){
             System.out.println(ventaController.confirmarVenta(venta));
+            if (venta.getIdVenta() > 0) {
+                System.out.println(facturaController.generarFactura(venta));
+            }
         }else{
             System.out.println("Venta cancelada. ");
         }
+
     }
+
+
 
 }

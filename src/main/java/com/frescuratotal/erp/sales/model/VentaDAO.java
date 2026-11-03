@@ -1,11 +1,8 @@
 package com.frescuratotal.erp.sales.model;
 
 import com.frescuratotal.erp.common.DatabaseConnection;
-import com.frescuratotal.erp.inventory.model.Producto;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VentaDAO {
 
