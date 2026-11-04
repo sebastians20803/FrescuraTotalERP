@@ -2,6 +2,7 @@ package com.frescuratotal.erp.sales.controller;
 
 import com.frescuratotal.erp.common.InformacionEmpresa;
 import com.frescuratotal.erp.common.InformacionEmpresaDAO;
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.inventory.model.Lote;
 import com.frescuratotal.erp.inventory.model.LoteDAO;
 import com.frescuratotal.erp.inventory.model.Producto;
@@ -20,14 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacturaController {
-    InformacionEmpresaDAO informacionEmpresaDAO = new InformacionEmpresaDAO();
-    FacturaDAO facturaDAO = new FacturaDAO();
-    ClienteDAO clienteDAO = new ClienteDAO();
-    LoteDAO loteDAO = new LoteDAO();
-    ProductoDAO productoDAO = new ProductoDAO();
-
-
-
+    private InformacionEmpresaDAO informacionEmpresaDAO = new InformacionEmpresaDAO();
+    private FacturaDAO facturaDAO = new FacturaDAO();
+    private ClienteDAO clienteDAO = new ClienteDAO();
+    private LoteDAO loteDAO = new LoteDAO();
+    private ProductoDAO productoDAO = new ProductoDAO();
 
     private String generarCufe(String numeroFactura, LocalDateTime fecha, long total, String nitEmpresa) {
         try {
@@ -50,8 +48,6 @@ public class FacturaController {
         }
     }
 
-
-
     public String generarFactura(Venta venta) {
         try {
             InformacionEmpresa empresa = informacionEmpresaDAO.obtener();
@@ -60,17 +56,11 @@ public class FacturaController {
             LocalDateTime fecha = LocalDateTime.now();
 
             String cufe = generarCufe(numeroFactura, fecha, venta.getMontoTotal(), empresa.getNit());
-
             String enlaceQr = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=" + cufe;
 
             Factura factura = new Factura(venta, numeroFactura, cufe, enlaceQr, fecha);
             int idFactura = facturaDAO.insertar(factura);
             factura.setIdFactura(idFactura);
-
-            // 6. Dibujar el PNG (lo hacemos en el siguiente paso)
-
-            // el cliente
-
 
             Cliente cliente = clienteDAO.buscarPorId(venta.getIdCliente());
 
@@ -82,15 +72,16 @@ public class FacturaController {
             }
 
             String ruta = FacturaImagen.generar(factura, venta, empresa, cliente, nombres);
+            LogUtils.info("Factura " + numeroFactura + " generada para la venta " + venta.getNumeroVenta()
+                    + ". Total: $" + venta.getMontoTotal() + ". Archivo: " + ruta);
             return "Factura " + numeroFactura + " generada en: " + ruta;
 
-
         } catch (SQLException e) {
+            LogUtils.error("Error al generar la factura de la venta " + venta.getNumeroVenta(), e);
             return "Error al generar la factura: " + e.getMessage();
-        }catch (IOException | WriterException e) {
+        } catch (IOException | WriterException e) {
+            LogUtils.error("Error al crear la imagen de la factura de la venta " + venta.getNumeroVenta(), e);
             return "Error al crear la imagen de la factura: " + e.getMessage();
         }
     }
-
-
 }

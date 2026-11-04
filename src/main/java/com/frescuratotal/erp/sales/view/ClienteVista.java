@@ -1,6 +1,7 @@
 package com.frescuratotal.erp.sales.view;
 
 import com.frescuratotal.erp.common.ScannerUtils;
+import com.frescuratotal.erp.inventory.model.Producto;
 import com.frescuratotal.erp.sales.controller.ClienteController;
 import com.frescuratotal.erp.sales.model.Cliente;
 import com.frescuratotal.erp.sales.model.TipoCliente;
@@ -66,9 +67,7 @@ public class ClienteVista {
             return;
         }
         System.out.println(Cliente.encabezado());
-        for (Cliente c : lista) {
-            System.out.println(c);
-        }
+        lista.forEach(System.out::println);
     }
 
     private void buscarPorId(){

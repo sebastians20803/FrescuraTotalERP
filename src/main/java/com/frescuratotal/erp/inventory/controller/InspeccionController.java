@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.inventory.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.inventory.model.*;
 
 import java.sql.SQLException;
@@ -10,15 +11,13 @@ public class InspeccionController {
     private RegistroCuarentenaDAO registroCuarentenaDAO = new RegistroCuarentenaDAO();
     private RegistroMermaDAO registroMermaDAO = new RegistroMermaDAO();
 
-
-    public String inspeccionarLote ( int idLote, boolean aprobado, String inspector, String motivoRechazo, String notas){
+    public String inspeccionarLote(int idLote, boolean aprobado, String inspector, String motivoRechazo, String notas){
 
         if (inspector == null || inspector.isBlank()) {
             return  ("Inspector nulo o inválido");
         }
         if (!aprobado && (motivoRechazo == null || motivoRechazo.isBlank())){
             return ("Debe tener un motivo valido");
-
         }
 
         try {
@@ -26,7 +25,7 @@ public class InspeccionController {
             if(loteAInspeccionar == null){
                 return "No se encontró un Lote con ese ID. ";
             }
-            if(!(loteAInspeccionar.getEstadoLote() == EstadoLote.EN_CUARENTENA)){
+            if(loteAInspeccionar.getEstadoLote() != EstadoLote.EN_CUARENTENA){
                 return "El lote debe estar en estado de Cuarentena.";
             }
 
@@ -36,28 +35,23 @@ public class InspeccionController {
             registroCuarentenaDAO.resolver(idLote,notas);
 
             if(aprobado){
-                 EstadoLote nuevoEstado = EstadoLote.calcularEstadoPorFecha(loteAInspeccionar.getFechaVencimiento());
-                 loteDAO.actualizarEstado(idLote, nuevoEstado);
-                 return "Lote aprobado. Nuevo estado: " + nuevoEstado;
+                EstadoLote nuevoEstado = EstadoLote.calcularEstadoPorFecha(loteAInspeccionar.getFechaVencimiento());
+                loteDAO.actualizarEstado(idLote, nuevoEstado);
+                LogUtils.info("Lote " + loteAInspeccionar.getNumeroLote() + " aprobado en inspección por "
+                        + inspector + ". Nuevo estado: " + nuevoEstado);
+                return "Lote aprobado. Nuevo estado: " + nuevoEstado;
             }else {
-                 RegistroMerma rM = new RegistroMerma(idLote, idInspeccion, loteAInspeccionar.getCantidad(), motivoRechazo, inspector);
-                 registroMermaDAO.registrarMerma(rM);
-                 loteDAO.actualizarCantidad(idLote, 0);
-                 return "Lote rechazado. Merma registrada de " + loteAInspeccionar.getCantidad();
+                RegistroMerma rM = new RegistroMerma(idLote, idInspeccion, loteAInspeccionar.getCantidad(), motivoRechazo, inspector);
+                registroMermaDAO.registrarMerma(rM);
+                loteDAO.actualizarCantidad(idLote, 0);
+                LogUtils.warn("Lote " + loteAInspeccionar.getNumeroLote() + " rechazado por " + inspector
+                        + ". Motivo: " + motivoRechazo + ". Merma total: " + loteAInspeccionar.getCantidad());
+                return "Lote rechazado. Merma registrada de " + loteAInspeccionar.getCantidad();
             }
 
-
-
         } catch (SQLException e){
+            LogUtils.error("Error en la inspección del lote " + idLote, e);
             return "Error en la inspección: " + e.getMessage();
         }
-
-
-
-
     }
-
-
-
-
 }

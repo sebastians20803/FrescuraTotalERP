@@ -13,6 +13,7 @@ import com.frescuratotal.erp.suppliers.model.Proveedor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class LoteVista {
     private ProductoController productoController = new ProductoController();
@@ -59,9 +60,7 @@ public class LoteVista {
 
     private void mostrarLotes(List<Lote> lotes) {
         System.out.println(Lote.encabezado());
-        for (Lote l : lotes) {
-            System.out.println(l);
-        }
+        lotes.forEach(System.out::println);
     }
 
     private void registrar(){
@@ -73,9 +72,7 @@ public class LoteVista {
             return;
         }
         System.out.println(Producto.encabezado());
-        for (Producto producto : listaProductos) {
-            System.out.println(producto);
-        }
+        listaProductos.forEach(System.out::println);
         int opcionIdProducto = ScannerUtils.capturarNumero("Digite el id del producto que desea asignar");
 
         List<Proveedor> listaProveedores = proveedorController.listarProveedores();
@@ -84,9 +81,8 @@ public class LoteVista {
             return;
         }
         System.out.println(Proveedor.encabezado());
-        for (Proveedor proveedor : listaProveedores) {
-            System.out.println(proveedor);
-        }
+        listaProveedores.forEach(System.out::println);
+
         int opcionIdProveedor = ScannerUtils.capturarNumero("Digite el id del proveedor que desea asignar");
 
         LocalDate fechaVencimiento = ScannerUtils.capturarFecha("Digite la fecha de vencimiento");
@@ -140,12 +136,8 @@ public class LoteVista {
     }
 
     private void inspeccionar(){
-        List<Lote> enCuarentena = new ArrayList<>();
-        for (Lote lote : loteController.listarLotes()) {
-            if (lote.getEstadoLote() == EstadoLote.EN_CUARENTENA) {
-                enCuarentena.add(lote);
-            }
-        }
+        List<Lote> enCuarentena = filtrarLotes(l -> l.getEstadoLote() == EstadoLote.EN_CUARENTENA);
+
         if (enCuarentena.isEmpty()) {
             System.out.println("No hay lotes en cuarentena.");
             return;
@@ -201,18 +193,13 @@ public class LoteVista {
             return;
         }
         System.out.println(Cliente.encabezado());
-        for (Cliente c : listaClientes){
-            System.out.println(c);
-        }
+        listaClientes.forEach(System.out::println);
     }
 
     private void registrarMerma() {
-        List<Lote> conStock = new ArrayList<>();
-        for (Lote lote : loteController.listarLotes()) {
-            if (lote.getCantidad() > 0) {
-                conStock.add(lote);
-            }
-        }
+        List<Lote> conStock = filtrarLotes(l -> l.getCantidad() > 0);
+
+
         if (conStock.isEmpty()) {
             System.out.println("No hay lotes con mercancía disponible.");
             return;
@@ -243,4 +230,12 @@ public class LoteVista {
 
         System.out.println(mermaController.registrarMerma(idLote, cantidad, motivo, usuario));
     }
+
+    private List<Lote> filtrarLotes(Predicate<Lote> criterio) {
+        return loteController.listarLotes().stream()
+                .filter(criterio)
+                .toList();
+    }
+
+
 }

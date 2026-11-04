@@ -1,9 +1,8 @@
 package com.frescuratotal.erp.inventory.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.inventory.model.Categoria;
 import com.frescuratotal.erp.inventory.model.CategoriaDAO;
-import com.frescuratotal.erp.inventory.model.Producto;
-import com.frescuratotal.erp.inventory.model.UnidadMedida;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,10 +16,8 @@ public class CategoriaController {
         try {
             return categoriaDAO.listarTodos();
         }catch (SQLException e){
-            System.out.println("Error al listar: " + e.getMessage());
+            LogUtils.error("Error al listar categorías", e);
             return new ArrayList<>();
         }
     }
-
-
 }

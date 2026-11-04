@@ -1,6 +1,7 @@
 package com.frescuratotal.erp.logistics.view;
 
 import com.frescuratotal.erp.common.ScannerUtils;
+import com.frescuratotal.erp.inventory.model.Producto;
 import com.frescuratotal.erp.logistics.controller.ConductorController;
 import com.frescuratotal.erp.logistics.controller.DespachoController;
 import com.frescuratotal.erp.logistics.controller.RutaController;
@@ -64,30 +65,22 @@ public class LogisticaVista {
 
     private void mostrarConductores(List<Conductor> conductores) {
         System.out.println(Conductor.encabezado());
-        for (Conductor c : conductores) {
-            System.out.println(c);
-        }
+        conductores.forEach(System.out::println);
     }
 
     private void mostrarVehiculos(List<Vehiculo> vehiculos) {
         System.out.println(Vehiculo.encabezado());
-        for (Vehiculo v : vehiculos) {
-            System.out.println(v);
-        }
+        vehiculos.forEach(System.out::println);
     }
 
     private void mostrarVentas(List<Venta> ventas) {
         System.out.println(Venta.encabezado());
-        for (Venta v : ventas) {
-            System.out.println(v);
-        }
+        ventas.forEach(System.out::println);
     }
 
     private void mostrarRutas(List<RutaEntrega> rutas) {
         System.out.println(RutaEntrega.encabezado());
-        for (RutaEntrega r : rutas) {
-            System.out.println(r);
-        }
+        rutas.forEach(System.out::println);
     }
 
     private List<RutaEntrega> rutasEnEstado(EstadoRuta estado) {

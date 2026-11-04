@@ -17,7 +17,7 @@ target/
 .idea/
 *.iml
 facturas/
-
+logs/
 ### Eclipse ###
 .apt_generated
 .classpath

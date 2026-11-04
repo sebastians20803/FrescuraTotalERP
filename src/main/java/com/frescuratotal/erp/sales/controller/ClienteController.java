@@ -1,9 +1,9 @@
 package com.frescuratotal.erp.sales.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.sales.model.Cliente;
 import com.frescuratotal.erp.sales.model.ClienteDAO;
 import com.frescuratotal.erp.sales.model.TipoCliente;
-
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -34,20 +34,22 @@ public class ClienteController {
         Cliente c = new Cliente(nombre, documento,email,telefono,direccion,tipo);
         try {
             int id = clienteDAO.insertarCliente(c);
+            LogUtils.info("Cliente registrado: " + nombre + " (" + tipo + ", id " + id + ")");
             return "Cliente registrado con id " + id;
         } catch (SQLIntegrityConstraintViolationException e) {
+            LogUtils.warn("Intento de registrar un documento de cliente repetido: " + documento);
             return "Ya existe un cliente con ese documento.";
         } catch (SQLException e) {
+            LogUtils.error("Error al registrar el cliente " + nombre, e);
             return "Error al registrar: " + e.getMessage();
         }
-
     }
 
     public List<Cliente> listarTodos(){
         try {
             return clienteDAO.listarTodos();
         }catch (SQLException e){
-            System.out.println("Error al listar: " + e.getMessage());
+            LogUtils.error("Error al listar clientes", e);
             return new ArrayList<>();
         }
     }
@@ -56,23 +58,17 @@ public class ClienteController {
         try {
             return clienteDAO.buscarPorId(id);
         }catch (SQLException e){
-            System.out.println("Error al buscar: " + e.getMessage());
+            LogUtils.error("Error al buscar el cliente " + id, e);
             return null;
         }
-
     }
 
     public List<Cliente> listarPorLote(int idLote){
         try {
             return clienteDAO.listarPorLote(idLote);
         }catch (SQLException e){
-            System.out.println("Error al listar: " + e.getMessage());
+            LogUtils.error("Error al consultar los clientes del lote " + idLote, e);
             return new ArrayList<>();
         }
     }
-
-
-
-
-
 }

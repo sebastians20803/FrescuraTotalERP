@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.inventory.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.inventory.model.*;
 
 import java.sql.SQLException;
@@ -16,7 +17,6 @@ public class RegistroCuarentenaController {
             return  ("El registro debe tener un usuario");
         }
 
-
         RegistroCuarentena rC = new RegistroCuarentena(idLote,motivo,usuario);
 
         try {
@@ -31,11 +31,13 @@ public class RegistroCuarentenaController {
             }
             registroCuarentenaDAO.insertarRegistroCuarentena(rC);
             loteDAO.actualizarEstado(idLote,EstadoLote.EN_CUARENTENA);
+
+            LogUtils.warn("Lote " + lote.getNumeroLote() + " puesto en cuarentena. Motivo: " + motivo
+                    + ". Registró: " + usuario);
             return "El lote " + lote.getNumeroLote() + " quedó en cuarentena. Bloqueado para la venta hasta su inspección.";
         }catch (SQLException e){
+            LogUtils.error("Error al poner en cuarentena el lote " + idLote, e);
             return "Error al poner en cuarentena: " + e.getMessage();
         }
-
     }
-
 }

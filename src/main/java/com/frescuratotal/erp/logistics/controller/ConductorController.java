@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.logistics.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.logistics.model.Conductor;
 import com.frescuratotal.erp.logistics.model.ConductorDAO;
 
@@ -29,20 +30,22 @@ public class ConductorController {
         Conductor c = new Conductor(nombre, numeroLicencia ,telefono,email);
         try {
             int id = conductorDAO.insertarConductor(c);
+            LogUtils.info("Conductor registrado: " + nombre + " (id " + id + ")");
             return "Conductor registrado con id " + id;
         } catch (SQLIntegrityConstraintViolationException e) {
+            LogUtils.warn("Intento de registrar una licencia repetida: " + numeroLicencia);
             return "Ya existe un conductor con ese numero de licencia.";
         } catch (SQLException e) {
+            LogUtils.error("Error al registrar el conductor " + nombre, e);
             return "Error al registrar: " + e.getMessage();
         }
-
     }
 
     public List<Conductor> listarTodos(){
         try {
             return conductorDAO.listarTodos();
         }catch (SQLException e){
-            System.out.println("Error al listar: " + e.getMessage());
+            LogUtils.error("Error al listar conductores", e);
             return new ArrayList<>();
         }
     }
@@ -51,10 +54,8 @@ public class ConductorController {
         try {
             return conductorDAO.buscarPorId(id);
         }catch (SQLException e){
-            System.out.println("Error al buscar: " + e.getMessage());
+            LogUtils.error("Error al buscar el conductor " + id, e);
             return null;
         }
-
     }
-
 }

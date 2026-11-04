@@ -43,9 +43,7 @@ public class ProductoVista {
 
         System.out.println("Categorías disponibles:");
         List<Categoria> listaCategorias = controllerCategoria.listarCategorias();
-        for (Categoria c : listaCategorias) {
-            System.out.println(c);
-        }
+        listaCategorias.forEach(System.out::println);
         int opcionCategoria = ScannerUtils.capturarNumero("Digite el id de la categoría que desea asignar");
 
         UnidadMedida[] unidades = UnidadMedida.values();
@@ -75,9 +73,7 @@ public class ProductoVista {
             return;
         }
         System.out.println(Producto.encabezado());
-        for (Producto producto : lista) {
-            System.out.println(producto);
-        }
+        lista.forEach(System.out::println);
     }
 
     private void actualizar(){
@@ -105,20 +101,16 @@ public class ProductoVista {
     private int elegirCategoria(int actual){
         List<Categoria> listaCategorias = controllerCategoria.listarCategorias();
         System.out.println("Categorías disponibles:");
-        for (Categoria c : listaCategorias) {
-            System.out.println(c);
-        }
+        listaCategorias.forEach(System.out::println);
         int opcion;
         boolean existe;
         do {
             opcion = ScannerUtils.capturarIntOpcional("Categoría", actual);
 
-            existe = false;
-            for (Categoria c : listaCategorias) {
-                if (c.getIdCategoria() == opcion) {
-                    existe = true;
-                }
-            }
+            final int elegida = opcion;
+            existe = listaCategorias.stream()
+                    .anyMatch(c -> c.getIdCategoria() == elegida);
+
             if (!existe) {
                 System.out.println("No existe una categoría con ese id.");
             }

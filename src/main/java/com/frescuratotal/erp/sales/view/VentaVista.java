@@ -51,9 +51,7 @@ public class VentaVista {
             return;
         }
         System.out.println(Cliente.encabezado());
-        for (Cliente c : listaClientes) {
-            System.out.println(c);
-        }
+        listaClientes.forEach(System.out::println);
         int idCliente = ScannerUtils.capturarNumero("Digite el id del cliente para la venta");
         if (clienteController.buscarPorId(idCliente) == null) {
             System.out.println("No existe un cliente con ese ID.");
@@ -74,9 +72,7 @@ public class VentaVista {
             return;
         }
         System.out.println(Producto.encabezado());
-        for (Producto p : listaProductos) {
-            System.out.println(p);
-        }
+        listaProductos.forEach(System.out::println);
         while (true) {
             int idProducto = ScannerUtils.capturarNumero("Id del producto (0 para terminar)");
             if (idProducto == 0) {
@@ -94,9 +90,9 @@ public class VentaVista {
         // ---------- 3. Resumen ----------
         System.out.println("\n=== RESUMEN DE LA VENTA ===");
         System.out.println(DetalleVenta.encabezado());
-        for (DetalleVenta d : venta.getDetalles()){
-            System.out.println(d);
-        }
+        System.out.println(Producto.encabezado());
+        venta.getDetalles().forEach(System.out::println);
+
         System.out.println();
         System.out.println(String.format("%-12s $%d", "Subtotal:", venta.getSubtotal()));
         System.out.println(String.format("%-12s -$%d", "Descuento:", venta.getTotalDescuento()));

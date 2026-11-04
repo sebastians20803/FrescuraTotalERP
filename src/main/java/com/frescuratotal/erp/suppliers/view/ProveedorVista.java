@@ -66,9 +66,7 @@ public class ProveedorVista {
             return;
         }
         System.out.println(Proveedor.encabezado());
-        for (Proveedor p : lista) {
-            System.out.println(p);
-        }
+        lista.forEach(System.out::println);
     }
 
     private void desactivar(){
@@ -106,17 +104,14 @@ public class ProveedorVista {
 
     private void mostrarProveedores() {
         System.out.println(Proveedor.encabezado());
-        for (Proveedor p : proveedorController.listarProveedores()) {
-            System.out.println(p);
-        }
+        proveedorController.listarProveedores().forEach(System.out::println);
     }
 
     private void mostrarProductos(List<Producto> productos) {
         System.out.println(Producto.encabezado());
-        for (Producto p : productos) {
-            System.out.println(p);
-        }
+        productos.forEach(System.out::println);
     }
+
 
     private void verCatalogo() {
         mostrarProveedores();
@@ -167,8 +162,6 @@ public class ProveedorVista {
         }
         System.out.println("\n=== LOTES ENTREGADOS POR EL PROVEEDOR " + idProveedor + " ===");
         System.out.println(Lote.encabezado());
-        for (Lote l : lotes) {
-            System.out.println(l);
-        }
+        lotes.forEach(System.out::println);
     }
 }

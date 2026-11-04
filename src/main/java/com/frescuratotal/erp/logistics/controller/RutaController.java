@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.logistics.controller;
 
+import com.frescuratotal.erp.common.LogUtils;
 import com.frescuratotal.erp.logistics.model.*;
 import com.frescuratotal.erp.sales.model.*;
 
@@ -39,7 +40,7 @@ public class RutaController {
                 return "El conductor está inactivo.";
             }
 
-            // 4. Cada venta: existe, está en preparación y no está en otra ruta
+            // Cada venta: existe, está en preparación y no está en otra ruta
             List<Venta> ventas = new ArrayList<>();
             List<String> direcciones = new ArrayList<>();
 
@@ -61,10 +62,15 @@ public class RutaController {
 
             int idRuta = rutaDAO.crearRuta(new RutaEntrega(nombre, usuario),
                     idVehiculo, idConductor, ventas, direcciones);
+
+            LogUtils.info("Ruta " + idRuta + " (" + nombre + ") creada por " + usuario + " con "
+                    + ventas.size() + " venta(s). Vehículo " + vehiculo.getPlaca()
+                    + ", conductor " + conductor.getNombre());
             return "Ruta " + idRuta + " creada con " + ventas.size() + " venta(s). Vehículo "
                     + vehiculo.getPlaca() + ", conductor " + conductor.getNombre() + ".";
 
         } catch (SQLException e) {
+            LogUtils.error("Error al crear la ruta " + nombre, e);
             return "Error al crear la ruta: " + e.getMessage();
         }
     }
@@ -79,8 +85,10 @@ public class RutaController {
                 return "Solo se pueden iniciar rutas planificadas. Estado actual: " + ruta.getEstado();
             }
             rutaDAO.iniciarRuta(idRuta);
+            LogUtils.info("Ruta " + idRuta + " (" + ruta.getNombreRuta() + ") salió a tránsito");
             return "Ruta " + ruta.getNombreRuta() + " en tránsito. Sus ventas pasaron a EN_TRANSITO.";
         } catch (SQLException e) {
+            LogUtils.error("Error al iniciar la ruta " + idRuta, e);
             return "Error al iniciar la ruta: " + e.getMessage();
         }
     }
@@ -95,8 +103,10 @@ public class RutaController {
                 return "Solo se pueden completar rutas en tránsito. Estado actual: " + ruta.getEstado();
             }
             rutaDAO.completarRuta(idRuta);
+            LogUtils.info("Ruta " + idRuta + " (" + ruta.getNombreRuta() + ") completada. Ventas entregadas");
             return "Ruta " + ruta.getNombreRuta() + " completada. Sus ventas quedaron ENTREGADAS.";
         } catch (SQLException e) {
+            LogUtils.error("Error al completar la ruta " + idRuta, e);
             return "Error al completar la ruta: " + e.getMessage();
         }
     }
@@ -105,7 +115,7 @@ public class RutaController {
         try {
             return rutaDAO.listarTodas();
         } catch (SQLException e) {
-            System.out.println("Error al listar rutas: " + e.getMessage());
+            LogUtils.error("Error al listar rutas", e);
             return new ArrayList<>();
         }
     }
