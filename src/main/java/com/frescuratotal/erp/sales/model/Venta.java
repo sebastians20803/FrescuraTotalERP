@@ -3,6 +3,7 @@ package com.frescuratotal.erp.sales.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 public class Venta {
     private int idVenta;
@@ -65,18 +66,19 @@ public class Venta {
     public void setEstado(EstadoVenta estado) { this.estado = estado; }
     public void setFechaVenta(LocalDateTime fechaVenta) { this.fechaVenta = fechaVenta; }
 
+
+
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     @Override
     public String toString() {
-        return "Venta{" +
-                "idVenta=" + idVenta +
-                ", numeroVenta='" + numeroVenta + '\'' +
-                ", idCliente=" + idCliente +
-                ", fechaVenta=" + fechaVenta +
-                ", subtotal=" + subtotal +
-                ", totalDescuento=" + totalDescuento +
-                ", totalImpuesto=" + totalImpuesto +
-                ", montoTotal=" + montoTotal +
-                ", estado=" + estado +
-                '}';
+        String fecha = (fechaVenta == null) ? "-" : fechaVenta.format(FORMATO);
+        return String.format("%-4d %-19s %-8d %-17s $%-11d %s",
+                idVenta, numeroVenta, idCliente, fecha, montoTotal, estado);
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-19s %-8s %-17s %-12s %s",
+                "ID", "NÚMERO", "CLIENTE", "FECHA", "TOTAL", "ESTADO");
     }
 }

@@ -1,6 +1,8 @@
 package com.frescuratotal.erp.inventory.model;
 
 import com.frescuratotal.erp.common.DatabaseConnection;
+import com.frescuratotal.erp.sales.model.Cliente;
+import com.frescuratotal.erp.suppliers.model.Proveedor;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -90,9 +92,27 @@ public class ProductoDAO {
 
         }
 
-
     }
 
+    public List<Producto> listarPorProveedor(int idProveedor) throws SQLException{
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT p.*\n" +
+                "FROM productos p\n" +
+                "JOIN productos_proveedor pp ON pp.id_producto = p.id_producto\n" +
+                "WHERE pp.id_proveedor = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProveedor);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(convertirFila(rs));
+                }
+            }
+        }
+        return lista;
+    }
 
 
 

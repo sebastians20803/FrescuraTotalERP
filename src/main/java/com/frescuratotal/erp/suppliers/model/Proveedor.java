@@ -110,16 +110,12 @@ public class Proveedor {
 
     @Override
     public String toString() {
-        return "Proveedor{" +
-                "idProveedor=" + idProveedor +
-                ", nombre='" + nombre + '\'' +
-                ", nit='" + nit + '\'' +
-                ", personaContacto='" + personaContacto + '\'' +
-                ", email='" + email + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", activo=" + activo +
-                ", fechaRegistro=" + fechaRegistro +
-                '}';
+        return String.format("%-4d %-30.30s %-13s %-22.22s %-12s %s",
+                idProveedor, nombre, nit, personaContacto, telefono, activo ? "Sí" : "No");
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-30s %-13s %-22s %-12s %s",
+                "ID", "NOMBRE", "NIT", "CONTACTO", "TELÉFONO", "ACTIVO");
     }
 }

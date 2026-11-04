@@ -1,5 +1,9 @@
 package com.frescuratotal.erp.suppliers.controller;
 
+import com.frescuratotal.erp.inventory.model.Lote;
+import com.frescuratotal.erp.inventory.model.LoteDAO;
+import com.frescuratotal.erp.inventory.model.Producto;
+import com.frescuratotal.erp.inventory.model.ProductoDAO;
 import com.frescuratotal.erp.suppliers.model.Proveedor;
 import com.frescuratotal.erp.suppliers.model.ProveedorDAO;
 
@@ -10,7 +14,9 @@ import java.util.List;
 
 public class ProveedorController {
 
-    ProveedorDAO dao = new ProveedorDAO();
+    private ProveedorDAO proveedorDAO = new ProveedorDAO();
+    private ProductoDAO productoDAO = new ProductoDAO();
+    private LoteDAO loteDAO = new LoteDAO();
 
     public String registrarProveedor(String nombre, String nit, String personaContacto, String email,
                                      String telefono, String direccion) {
@@ -37,7 +43,7 @@ public class ProveedorController {
 
         Proveedor p = new Proveedor(nombre, nit, personaContacto, email, telefono, direccion);
         try {
-            int id = dao.insertarProveedor(p);
+            int id = proveedorDAO.insertarProveedor(p);
             return "Proveedor registrado con id " + id;
         } catch (SQLIntegrityConstraintViolationException e) {
             return "Ya existe un proveedor con ese NIT.";
@@ -48,7 +54,7 @@ public class ProveedorController {
 
     public List<Proveedor> listarProveedores(){
         try {
-            return dao.listarTodos();
+            return proveedorDAO.listarTodos();
         }catch (SQLException e){
             System.out.println("Error al listar: " + e.getMessage());
             return new ArrayList<>();
@@ -57,7 +63,7 @@ public class ProveedorController {
 
     public boolean desactivarProveedor(int id){
         try {
-            return dao.desactivarProveedor(id);
+            return proveedorDAO.desactivarProveedor(id);
         }   catch (SQLException e){
             System.out.println("Error al desactivar: " + e.getMessage());
             return false;
@@ -70,7 +76,7 @@ public class ProveedorController {
         }
 
         try {
-            Proveedor original = dao.buscarPorId(p.getIdProveedor());
+            Proveedor original = proveedorDAO.buscarPorId(p.getIdProveedor());
             boolean nitCambio = original == null || !original.getNit().equals(p.getNit());
             if (nitCambio && !p.getNit().matches("[0-9]{9}-[0-9]")) {
                 return "Nit inválido: Ejemplo de formato correcto: 123456789-0";
@@ -93,7 +99,7 @@ public class ProveedorController {
         }
 
         try {
-            if(dao.actualizarProveedor(p)){
+            if(proveedorDAO.actualizarProveedor(p)){
                 return ("Proveedor Actualizado Correctamente!");
             }else {
                 return ("No existe un proveedor con ese ID.");
@@ -108,12 +114,67 @@ public class ProveedorController {
 
     public Proveedor buscarPorId(int id){
         try {
-            return dao.buscarPorId(id);
+            return proveedorDAO.buscarPorId(id);
         }catch (SQLException e){
             System.out.println("Error al buscar: " + e.getMessage());
             return null;
         }
 
+    }
+
+    public String agregarAlCatalogo(int idProveedor, int idProducto) {
+        try {
+            Proveedor proveedor = proveedorDAO.buscarPorId(idProveedor);
+            if (proveedor == null) {
+                return "No existe un proveedor con ese ID.";
+            }
+            if (!proveedor.isActivo()) {
+                return "El proveedor está inactivo.";
+            }
+            Producto producto = productoDAO.buscarPorId(idProducto);
+            if (producto == null) {
+                return "No existe un producto con ese ID.";
+            }
+
+            proveedorDAO.agregarAlCatalogo(idProveedor, idProducto);
+            return producto.getNombre() + " agregado al catálogo de " + proveedor.getNombre() + ".";
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return "Ese producto ya está en el catálogo de este proveedor.";
+        } catch (SQLException e) {
+            return "Error al agregar al catálogo: " + e.getMessage();
+        }
+    }
+
+    public String quitarDelCatalogo(int idProveedor, int idProducto) {
+        try {
+            if (proveedorDAO.quitarDelCatalogo(idProveedor, idProducto)) {
+                return "Producto quitado del catálogo.";
+            } else {
+                return "Ese producto no está en el catálogo de este proveedor.";
+            }
+        } catch (SQLException e) {
+            return "Error al quitar del catálogo: " + e.getMessage();
+
+        }
+    }
+
+    public List<Producto> verCatalogo(int idProveedor) {
+        try {
+            return productoDAO.listarPorProveedor(idProveedor);
+        } catch (SQLException e) {
+            System.out.println("Error al consultar el catálogo: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Lote> historialCompras(int idProveedor) {
+        try {
+            return loteDAO.listarPorProveedor(idProveedor);
+        } catch (SQLException e) {
+            System.out.println("Error al consultar el historial: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
 }

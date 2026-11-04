@@ -143,24 +143,14 @@ public class Lote {
 
     @Override
     public String toString() {
-        return "Lote{ " +
-                "idLote=" + idLote +
-                ", numeroLote='" + numeroLote + '\'' +
-                ", idProducto=" + idProducto +
-                ", idProveedor=" + idProveedor +
-                ", fechaIngreso=" + fechaIngreso +
-                ", fechaVencimiento=" + fechaVencimiento +
-                ", cantidadInicial=" + cantidadInicial +
-                ", cantidad=" + cantidad +
-                ", precioCompra=" + precioCompra +
-                ", precioVenta=" + precioVenta +
-                ", pasillo='" + pasillo + '\'' +
-                ", estante='" + estante + '\'' +
-                ", estadoLote=" + estadoLote +
-                '}';
+        return String.format("%-4d %-19s %-5d %-5d %-11s %-9.1f %-9.1f $%-8d %-6s %s",
+                idLote, numeroLote, idProducto, idProveedor, fechaVencimiento,
+                cantidadInicial, cantidad, precioVenta, pasillo + "-" + estante, estadoLote);
     }
 
-    public long getpreci() {
-        return 0;
+    public static String encabezado() {
+        return String.format("%-4s %-19s %-5s %-5s %-11s %-9s %-9s %-9s %-6s %s",
+                "ID", "NÚMERO", "PROD", "PROV", "VENCE", "INICIAL", "QUEDA", "P.VENTA", "UBIC.", "ESTADO");
     }
+
 }

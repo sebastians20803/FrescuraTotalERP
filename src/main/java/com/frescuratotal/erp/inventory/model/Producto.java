@@ -77,13 +77,12 @@ public class Producto {
 
     @Override
     public String toString() {
-        return "Producto{" +
-                "idProducto=" + idProducto +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", idCategoria=" + idCategoria +
-                ", unidadMedida='" + unidadMedida + '\'' +
-                ", precioBase=" + precioBase +
-                '}';
+        return String.format("%-4d %-22.22s %-5d %-8s $%d",
+                idProducto, nombre, idCategoria, unidadMedida, precioBase);
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-22s %-5s %-8s %s",
+                "ID", "NOMBRE", "CAT.", "UNIDAD", "PRECIO BASE");
     }
 }

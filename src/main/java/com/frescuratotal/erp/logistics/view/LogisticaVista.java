@@ -6,6 +6,7 @@ import com.frescuratotal.erp.logistics.controller.DespachoController;
 import com.frescuratotal.erp.logistics.controller.RutaController;
 import com.frescuratotal.erp.logistics.controller.VehiculoController;
 import com.frescuratotal.erp.logistics.model.Conductor;
+import com.frescuratotal.erp.logistics.model.EstadoRuta;
 import com.frescuratotal.erp.logistics.model.RutaEntrega;
 import com.frescuratotal.erp.logistics.model.Vehiculo;
 import com.frescuratotal.erp.sales.model.EstadoVenta;
@@ -26,107 +27,117 @@ public class LogisticaVista {
         do{
             System.out.println(""" 
                 -----------------------------------
-                             LOGISTICA
+                             LOGÍSTICA
                 -----------------------------------
-                1. Registrar conductor
-                2. Listar conductores
-                3. Registrar vehiculo
-                4. Listar vehiculos.
-                5. Preparar venta para despacho
-                6. Panel de despachos
-                7. Crear ruta de entrega
-                8. Listar rutas
-                9. Iniciar ruta (salida)
-                10. Completar ruta (entregada)
-                0. Volver
+                1. Registrar conductor.
+                2. Listar conductores.
+                3. Registrar vehículo.
+                4. Listar vehículos.
+                5. Preparar venta para despacho.
+                6. Panel de despachos.
+                7. Crear ruta de entrega.
+                8. Listar rutas.
+                9. Iniciar ruta (salida).
+                10. Completar ruta (entregada).
+                0. Volver.
                 """);
-            opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar: ");
+            opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar");
 
             switch (opcion){
-
-                case 1->{
-                    registrarConductor();
-                }
-                case 2->{
-                    listarConductores();
-                }
-                case 3->{
-                    registrarVehiculo();
-                }
-                case 4->{
-                    listarVehiculos();
-                }
-                case 5->{
-                    prepararVenta();
-                }
-                case 6->{
-                    panelDespachos();
-                }
-                case 7->{
-                    crearRuta();
-                }
-                case 8->{
-                    listarRuta();
-                }
-                case 9->{
-                    iniciarRuta();
-                }
-                case 10->{
-                    completarRuta();
-                }
-
-                case 0->{
-                    System.out.println("Volviendo al menu anterior. ");
-                }
+                case 1 -> registrarConductor();
+                case 2 -> listarConductores();
+                case 3 -> registrarVehiculo();
+                case 4 -> listarVehiculos();
+                case 5 -> prepararVenta();
+                case 6 -> panelDespachos();
+                case 7 -> crearRuta();
+                case 8 -> listarRutas();
+                case 9 -> iniciarRuta();
+                case 10 -> completarRuta();
+                case 0 -> System.out.println("Volviendo al menu anterior.");
                 default -> System.out.println("Opción no válida.");
-
             }
         }while (opcion!=0);
     }
 
+    // ---------- Métodos para mostrar listas con su encabezado ----------
+
+    private void mostrarConductores(List<Conductor> conductores) {
+        System.out.println(Conductor.encabezado());
+        for (Conductor c : conductores) {
+            System.out.println(c);
+        }
+    }
+
+    private void mostrarVehiculos(List<Vehiculo> vehiculos) {
+        System.out.println(Vehiculo.encabezado());
+        for (Vehiculo v : vehiculos) {
+            System.out.println(v);
+        }
+    }
+
+    private void mostrarVentas(List<Venta> ventas) {
+        System.out.println(Venta.encabezado());
+        for (Venta v : ventas) {
+            System.out.println(v);
+        }
+    }
+
+    private void mostrarRutas(List<RutaEntrega> rutas) {
+        System.out.println(RutaEntrega.encabezado());
+        for (RutaEntrega r : rutas) {
+            System.out.println(r);
+        }
+    }
+
+    private List<RutaEntrega> rutasEnEstado(EstadoRuta estado) {
+        List<RutaEntrega> resultado = new ArrayList<>();
+        for (RutaEntrega r : rutaController.listarRutas()) {
+            if (r.getEstado() == estado) {
+                resultado.add(r);
+            }
+        }
+        return resultado;
+    }
+
+    // ---------- Conductores y vehículos ----------
+
     private void registrarConductor(){
-        String nombre = ScannerUtils.capturarTexto("Digite el NOMBRE del conductor ");
-        String numeroLicencia = ScannerUtils.capturarTexto("Digite el Numero de Licencia del conductor ");
-        String telefono = ScannerUtils.capturarTexto("Digite el TELÉFONO del conductor ");
-        String email = ScannerUtils.capturarTexto("Digite el EMAIL del conductor ");
+        String nombre = ScannerUtils.capturarTexto("Digite el NOMBRE del conductor");
+        String numeroLicencia = ScannerUtils.capturarTexto("Digite el NÚMERO DE LICENCIA del conductor");
+        String telefono = ScannerUtils.capturarTexto("Digite el TELÉFONO del conductor");
+        String email = ScannerUtils.capturarTexto("Digite el EMAIL del conductor");
 
-        String mensaje = conductorController.registrarConductor(nombre, numeroLicencia, telefono, email);
-        System.out.println(mensaje);
-
+        System.out.println(conductorController.registrarConductor(nombre, numeroLicencia, telefono, email));
     }
 
     private void listarConductores(){
         List<Conductor> lista = conductorController.listarTodos();
         if (lista.isEmpty()){
-            System.out.println("No hay conductores registrados");
-        }else {
-            for (Conductor c : lista){
-                System.out.println(c);
-            }
+            System.out.println("No hay conductores registrados.");
+            return;
         }
+        mostrarConductores(lista);
     }
 
     private void registrarVehiculo(){
-        String placa = ScannerUtils.capturarTexto("Digite la PLACA del vehiculo ");
-        String modelo = ScannerUtils.capturarTexto("Digite el MODELO del vehiculo ");
-        double capacidad = ScannerUtils.capturarDecimal("Digite la capacidad del vehiculo ");
+        String placa = ScannerUtils.capturarTexto("Digite la PLACA del vehículo");
+        String modelo = ScannerUtils.capturarTexto("Digite el MODELO del vehículo");
+        double capacidad = ScannerUtils.capturarDecimal("Digite la capacidad del vehículo (kg)");
 
-        String mensaje = vehiculoController.registrarVehiculo(placa, modelo, capacidad);
-        System.out.println(mensaje);
-
+        System.out.println(vehiculoController.registrarVehiculo(placa, modelo, capacidad));
     }
 
     private void listarVehiculos(){
         List<Vehiculo> lista = vehiculoController.listarTodos();
         if (lista.isEmpty()){
-            System.out.println("No hay vehiculos registrados");
-        }else {
-            for (Vehiculo c : lista){
-                System.out.println(c);
-            }
-          }
-
+            System.out.println("No hay vehículos registrados.");
+            return;
+        }
+        mostrarVehiculos(lista);
     }
+
+    // ---------- Despachos ----------
 
     private void prepararVenta() {
         List<Venta> registradas = despachoController.listarPorEstado(EstadoVenta.REGISTRADA);
@@ -134,9 +145,7 @@ public class LogisticaVista {
             System.out.println("No hay ventas registradas pendientes de despacho.");
             return;
         }
-        for (Venta v : registradas) {
-            System.out.println(v);
-        }
+        mostrarVentas(registradas);
         int idVenta = ScannerUtils.capturarNumero("Id de la venta a preparar");
         System.out.println(despachoController.prepararVenta(idVenta));
     }
@@ -147,11 +156,11 @@ public class LogisticaVista {
             System.out.println("No hay ventas en preparación.");
             return;
         }
-        System.out.println("--- PANEL DE DESPACHOS ---");
-        for (Venta v : enPreparacion) {
-            System.out.println(v);
-        }
+        System.out.println("\n=== PANEL DE DESPACHOS ===");
+        mostrarVentas(enPreparacion);
     }
+
+    // ---------- Rutas ----------
 
     private void crearRuta() {
         List<Venta> enPreparacion = despachoController.listarPorEstado(EstadoVenta.EN_PREPARACION);
@@ -163,20 +172,14 @@ public class LogisticaVista {
         String nombre = ScannerUtils.capturarTexto("Nombre de la ruta");
         String usuario = ScannerUtils.capturarTexto("Usuario que crea la ruta");
 
-        for (Vehiculo v : vehiculoController.listarTodos()) {
-            System.out.println(v);
-        }
+        mostrarVehiculos(vehiculoController.listarTodos());
         int idVehiculo = ScannerUtils.capturarNumero("Id del vehículo");
 
-        for (Conductor c : conductorController.listarTodos()) {
-            System.out.println(c);
-        }
+        mostrarConductores(conductorController.listarTodos());
         int idConductor = ScannerUtils.capturarNumero("Id del conductor");
 
-        System.out.println("--- Ventas en preparación ---");
-        for (Venta v : enPreparacion) {
-            System.out.println(v);
-        }
+        System.out.println("\n=== VENTAS EN PREPARACIÓN ===");
+        mostrarVentas(enPreparacion);
         List<Integer> idsVentas = new ArrayList<>();
         while (true) {
             int idVenta = ScannerUtils.capturarNumero("Id de venta a incluir (0 para terminar)");
@@ -189,47 +192,34 @@ public class LogisticaVista {
         System.out.println(rutaController.crearRuta(nombre, usuario, idVehiculo, idConductor, idsVentas));
     }
 
-    private void listarRuta(){
+    private void listarRutas(){
         List<RutaEntrega> lista = rutaController.listarRutas();
         if (lista.isEmpty()){
-            System.out.println("No hay rutas registradas");
-        }else {
-            for (RutaEntrega rE : lista){
-                System.out.println(rE);
-            }
+            System.out.println("No hay rutas registradas.");
+            return;
         }
-
+        mostrarRutas(lista);
     }
 
     private void iniciarRuta(){
-        List<RutaEntrega> lista = rutaController.listarRutas();
-        if (lista.isEmpty()){
-            System.out.println("No hay rutas registradas");
+        List<RutaEntrega> planificadas = rutasEnEstado(EstadoRuta.PLANIFICADA);
+        if (planificadas.isEmpty()){
+            System.out.println("No hay rutas planificadas para iniciar.");
             return;
-
         }
-        for (RutaEntrega rE : lista){
-            System.out.println(rE);
-        }
-        int opcionRutaIniciar = ScannerUtils.capturarNumero("Digite el id de la ruta a iniciar");
-
-        System.out.println(rutaController.iniciarRuta(opcionRutaIniciar));
-
+        mostrarRutas(planificadas);
+        int idRuta = ScannerUtils.capturarNumero("Digite el id de la ruta a iniciar");
+        System.out.println(rutaController.iniciarRuta(idRuta));
     }
 
     private void completarRuta(){
-        List<RutaEntrega> lista = rutaController.listarRutas();
-        if (lista.isEmpty()){
-            System.out.println("No hay rutas registradas");
+        List<RutaEntrega> enTransito = rutasEnEstado(EstadoRuta.EN_TRANSITO);
+        if (enTransito.isEmpty()){
+            System.out.println("No hay rutas en tránsito para completar.");
             return;
         }
-        for (RutaEntrega rE : lista){
-            System.out.println(rE);
-        }
-        int opcionRutaCompletar = ScannerUtils.capturarNumero("Digite el id de la ruta a completar");
-
-        System.out.println(rutaController.completarRuta(opcionRutaCompletar));
-
+        mostrarRutas(enTransito);
+        int idRuta = ScannerUtils.capturarNumero("Digite el id de la ruta a completar");
+        System.out.println(rutaController.completarRuta(idRuta));
     }
-
 }

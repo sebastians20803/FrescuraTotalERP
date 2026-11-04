@@ -8,7 +8,7 @@ public class RegistroMerma {
     private Integer idInspeccion;
     private double cantidadPerdida;
     private String motivo;
-    private LocalDateTime FechaRegistro;
+    private LocalDateTime fechaRegistro;
     private String usuarioRegistro;
 
     public RegistroMerma(int idRegistro, int idLote, Integer idInspeccion, double cantidadperdida, String motivo, LocalDateTime fechaInspeccion, String usuarioRegistro) {
@@ -17,7 +17,7 @@ public class RegistroMerma {
         this.idInspeccion = idInspeccion;
         this.cantidadPerdida = cantidadperdida;
         this.motivo = motivo;
-        this.FechaRegistro = fechaInspeccion;
+        this.fechaRegistro = fechaInspeccion;
         this.usuarioRegistro = usuarioRegistro;
     }
 
@@ -50,7 +50,7 @@ public class RegistroMerma {
     }
 
     public LocalDateTime getFechaRegistro() {
-        return FechaRegistro;
+        return fechaRegistro;
     }
 
     public String getUsuarioRegistro() {
@@ -78,7 +78,7 @@ public class RegistroMerma {
     }
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
-        this.FechaRegistro = fechaRegistro;
+        this.fechaRegistro = fechaRegistro;
     }
 
     public void setUsuarioRegistro(String usuarioRegistro) {
@@ -93,7 +93,7 @@ public class RegistroMerma {
                 ", idInspeccion=" + idInspeccion +
                 ", cantidadperdida=" + cantidadPerdida +
                 ", motivo='" + motivo + '\'' +
-                ", fechaInspeccion=" + FechaRegistro +
+                ", fechaInspeccion=" + fechaRegistro +
                 ", usuarioRegistro='" + usuarioRegistro + '\'' +
                 '}';
     }

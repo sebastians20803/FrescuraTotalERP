@@ -1,6 +1,7 @@
 package com.frescuratotal.erp.logistics.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class RutaEntrega {
     private int idRuta;
@@ -38,10 +39,18 @@ public class RutaEntrega {
 
     public void setIdRuta(int idRuta) { this.idRuta = idRuta; }
 
+
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     @Override
     public String toString() {
-        return idRuta + ". " + nombreRuta + " | " + estado
-                + (horaSalidaReal != null ? " | salió: " + horaSalidaReal : "")
-                + (horaLlegadaReal != null ? " | llegó: " + horaLlegadaReal : "");
+        String salida = (horaSalidaReal == null) ? "-" : horaSalidaReal.format(FORMATO);
+        String llegada = (horaLlegadaReal == null) ? "-" : horaLlegadaReal.format(FORMATO);
+        return String.format("%-4d %-25.25s %-13s %-17s %s",
+                idRuta, nombreRuta, estado, salida, llegada);
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-25s %-13s %-17s %s",
+                "ID", "NOMBRE", "ESTADO", "SALIDA", "LLEGADA");
     }
 }

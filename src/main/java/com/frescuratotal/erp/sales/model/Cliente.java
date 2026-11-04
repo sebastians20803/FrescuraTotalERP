@@ -98,16 +98,13 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "id_cliente=" + idCliente +
-                ", nombre='" + nombre + '\'' +
-                ", documento='" + documento + '\'' +
-                ", email='" + email + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", id_tipo=" + tipoCliente +
-                ", fecha_registro=" + fechaRegistro +
-                '}';
+        return String.format("%-4d %-30.30s %-13s %-12s %-25.25s %s",
+                idCliente, nombre, documento, telefono, email, tipoCliente);
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-30s %-13s %-12s %-25s %s",
+                "ID", "NOMBRE", "DOCUMENTO", "TELÉFONO", "EMAIL", "TIPO");
     }
 
 

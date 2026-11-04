@@ -137,16 +137,29 @@ public class ProveedorDAO {
 
             return filas > 0;
 
-
-
         }
-
-
 
     }
 
+    public boolean agregarAlCatalogo(int idProveedor, int idProducto) throws SQLException {
+        String sql = "INSERT INTO productos_proveedor (id_proveedor, id_producto) VALUES (?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProveedor);
+            ps.setInt(2, idProducto);
+            return ps.executeUpdate() > 0;
+        }
+    }
 
-
+    public boolean quitarDelCatalogo(int idProveedor, int idProducto) throws SQLException {
+        String sql = "DELETE FROM productos_proveedor WHERE id_proveedor = ? AND id_producto = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProveedor);
+            ps.setInt(2, idProducto);
+            return ps.executeUpdate() > 0;
+        }
+    }
 
 
 

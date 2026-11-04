@@ -31,6 +31,12 @@ public class Vehiculo {
 
     @Override
     public String toString() {
-        return idVehiculo + ". " + placa + " | " + modelo + " | " + capacidad + " kg | " + estado;
+        return String.format("%-4d %-8s %-18.18s %-10.0f %s",
+                idVehiculo, placa, modelo, capacidad, estado);
+    }
+
+    public static String encabezado() {
+        return String.format("%-4s %-8s %-18s %-10s %s",
+                "ID", "PLACA", "MODELO", "CAP. (KG)", "ESTADO");
     }
 }

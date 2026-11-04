@@ -37,7 +37,14 @@ public class Conductor {
 
     @Override
     public String toString() {
-        return idConductor + ". " + nombre + " | Licencia: " + numeroLicencia
-                + " | Tel: " + telefono + (activo ? "" : " | INACTIVO");
+        return String.format("%-4d %-28.28s %-12s %-12s %s",
+                idConductor, nombre, numeroLicencia, telefono, activo ? "Sí" : "No");
     }
+
+    public static String encabezado() {
+        return String.format("%-4s %-28s %-12s %-12s %s",
+                "ID", "NOMBRE", "LICENCIA", "TELÉFONO", "ACTIVO");
+    }
+
+
 }

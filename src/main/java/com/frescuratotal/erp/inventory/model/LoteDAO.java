@@ -132,6 +132,22 @@ public class LoteDAO {
         }
         return lista;
     }
+    public List<Lote> listarPorProveedor(int idProveedor) throws SQLException{
+        List<Lote> lista = new ArrayList<>();
+        String sql = "SELECT * FROM lotes_inventario WHERE id_proveedor = ? ORDER BY fecha_ingreso DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProveedor);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(convertirFila(rs));
+                }
+            }
+        }
+        return lista;
+    }
 
 
 

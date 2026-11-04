@@ -114,18 +114,13 @@ public class DetalleVenta {
 
     @Override
     public String toString() {
-        return "DetalleVenta{" +
-                "idDetalle=" + idDetalle +
-                ", idVenta=" + idVenta +
-                ", idLote=" + idLote +
-                ", cantidadVendida=" + cantidadVendida +
-                ", precioUnitario=" + precioUnitario +
-                ", descuentoAplicado=" + descuentoAplicado +
-                ", montoDescuento=" + montoDescuento +
-                ", tasaImpuesto=" + tasaImpuesto +
-                ", montoImpuesto=" + montoImpuesto +
-                ", subtotal=" + subtotal +
-                ", totalLinea=" + totalLinea +
-                '}';
+        return String.format("%-6d %-9.1f $%-9d %-5.0f%% $%-9d $%-9d $%d",
+                idLote, cantidadVendida, precioUnitario, descuentoAplicado * 100,
+                montoDescuento, montoImpuesto, totalLinea);
+    }
+
+    public static String encabezado() {
+        return String.format("%-6s %-9s %-10s %-6s %-10s %-10s %s",
+                "LOTE", "CANT.", "PRECIO", "DESC.", "VALOR DESC.", "IVA", "TOTAL");
     }
 }
