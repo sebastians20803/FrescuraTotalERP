@@ -6,6 +6,9 @@ Frescura Total es un centro de distribución que compra alimentos perecederos a 
 
 ## Autores
 
+- **Juan Sebastian Sierra Alarcon**
+
+Trainer: Cristian Diaz
 
 ## Requerimientos previos
 
@@ -85,6 +88,8 @@ Las facturas generadas se guardan como imágenes PNG en la carpeta `facturas/`, 
 - Registrar, listar, actualizar y desactivar proveedores.
 - Validación de NIT (`123456789-0`), correo y teléfono. El NIT es único.
 - Los proveedores se desactivan en lugar de borrarse, para conservar la trazabilidad de los lotes que entregaron.
+- **Catálogo de productos**: el sistema registra qué productos puede suministrar cada proveedor (ver, agregar y quitar productos del catálogo). No se puede agregar productos al catálogo de un proveedor inactivo.
+- **Historial de compras**: lista todos los lotes que ha entregado un proveedor, del más reciente al más antiguo, para evaluar su fiabilidad.
 
 ### Inventario y calidad
 - Productos con categoría y unidad de medida.
@@ -93,6 +98,8 @@ Las facturas generadas se guardan como imágenes PNG en la carpeta `facturas/`, 
 - **Revisión diaria de vencimientos** (proceso que se ejecuta desde el menú): los lotes con 7 días o menos pasan a próximo a vencer y los que superaron su fecha pasan a vencidos. Los lotes en cuarentena no se modifican.
 - **Cuarentena**: bloquea un lote para la venta y registra el motivo y quién lo reportó.
 - **Inspección de calidad**: el inspector aprueba (el lote recupera el estado que le corresponde por fecha) o rechaza (lo que queda del lote se registra como merma y su cantidad queda en 0).
+- **Merma manual**: registra la baja de producto indicando el lote, la cantidad y la razón (vencido, dañado u otra). La cantidad se descuenta del lote y no puede superar lo disponible.
+- **Trazabilidad de un lote**: a partir de un lote muestra de qué proveedor vino y qué clientes recibieron productos de ese lote (consulta con `JOIN` entre `clientes`, `ventas` y `detalles_venta`).
 
 ### Ventas y facturación
 - Clientes mayoristas y minoristas.
@@ -107,6 +114,15 @@ Las facturas generadas se guardan como imágenes PNG en la carpeta `facturas/`, 
 - **Panel de despachos**: las ventas pasan de `REGISTRADA` a `EN_PREPARACION`.
 - **Rutas de entrega**: se asignan un vehículo activo, un conductor activo y una o varias ventas en preparación.
 - Seguimiento: al iniciar la ruta, sus ventas pasan a `EN_TRANSITO`; al completarla, quedan `ENTREGADA` y se registran las horas reales de salida y llegada.
+
+### Presentación en consola
+- Los listados se muestran como tablas con encabezado y columnas de ancho fijo. Cada clase del modelo define su propio formato con `toString()` y un método estático `encabezado()`, usando `String.format`.
+
+## Datos de prueba
+
+El archivo `docs/database.sql` incluye datos de prueba coherentes entre sí: 50 proveedores, 50 productos, 50 clientes, 90 lotes y 62 ventas con sus detalles y facturas, además de catálogos, cuarentenas, inspecciones, mermas, conductores, vehículos y rutas. Cada lote proviene de un proveedor que tiene ese producto en su catálogo, las cantidades de los lotes cuadran con lo vendido y las mermas, y los totales de cada venta y factura coinciden con la suma de sus líneas. Los datos de prueba se generaron con apoyo de IA.
+
+Los estados de los lotes del script están calculados al 04/11/2026. Al cargar la base en otra fecha, ejecute la opción **Lotes → Revisar vencimientos** para actualizarlos.
 
 ## Estructura del proyecto
 
