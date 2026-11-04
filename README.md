@@ -6,7 +6,6 @@ Frescura Total es un centro de distribución que compra alimentos perecederos a 
 
 ## Autores
 
-- Sebastián *(completar con nombre completo)*
 
 ## Requerimientos previos
 
