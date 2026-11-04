@@ -1,10 +1,7 @@
 package com.frescuratotal.erp.inventory.view;
 
 import com.frescuratotal.erp.common.ScannerUtils;
-import com.frescuratotal.erp.inventory.controller.InspeccionController;
-import com.frescuratotal.erp.inventory.controller.LoteController;
-import com.frescuratotal.erp.inventory.controller.ProductoController;
-import com.frescuratotal.erp.inventory.controller.RegistroCuarentenaController;
+import com.frescuratotal.erp.inventory.controller.*;
 import com.frescuratotal.erp.inventory.model.EstadoLote;
 import com.frescuratotal.erp.inventory.model.Lote;
 import com.frescuratotal.erp.inventory.model.Producto;
@@ -23,6 +20,7 @@ public class LoteVista {
     private RegistroCuarentenaController registroCuarentenaController = new RegistroCuarentenaController();
     private InspeccionController inspeccionController = new InspeccionController();
     private ClienteController clienteController = new ClienteController();
+    private MermaController mermaController = new MermaController();
 
     public void mostrarMenu(){
         int opcion;
@@ -38,6 +36,7 @@ public class LoteVista {
                     5. Poner lote en cuarentena.
                     6. Inspeccionar lote en cuarentena.
                     7. Trazabilidad de un lote.
+                    8. Registrar merma (pérdida de mercancía).
                     0. Volver
                     """);
             opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar: ");
@@ -65,6 +64,9 @@ public class LoteVista {
                 }
                 case 7->{
                     trazabilidad();
+                }
+                case 8->{
+                    registrarMerma();
                 }
                 case 0->{
                     System.out.println("Volviendo al menu anterior. ");
@@ -217,6 +219,46 @@ public class LoteVista {
             System.out.println(c);
         }
 
+    }
+
+    private void registrarMerma() {
+
+        List<Lote> lista = loteController.listarLotes();
+        int contador = 0;
+        for (Lote lote : lista) {
+            if (lote.getCantidad() > 0) {
+                System.out.println(lote);
+                contador++;
+            }
+        }
+        if (contador == 0) {
+            System.out.println("No hay lotes con mercancía disponible.");
+            return;
+        }
+
+        int idLote = ScannerUtils.capturarNumero("Id del lote");
+        double cantidad = ScannerUtils.capturarDecimal("Cantidad perdida");
+
+        System.out.println("1. Vencido");
+        System.out.println("2. Dañado");
+        System.out.println("3. Otro");
+        int opcionMotivo;
+        do {
+            opcionMotivo = ScannerUtils.capturarNumero("Razón de la merma");
+        } while (opcionMotivo < 1 || opcionMotivo > 3);
+
+        String motivo;
+        if (opcionMotivo == 1) {
+            motivo = "Vencido";
+        } else if (opcionMotivo == 2) {
+            motivo = "Dañado";
+        } else {
+            motivo = ScannerUtils.capturarTexto("Describa el motivo");
+        }
+
+        String usuario = ScannerUtils.capturarTexto("Usuario que registra la merma");
+
+        System.out.println(mermaController.registrarMerma(idLote, cantidad, motivo, usuario));
     }
 
 }
