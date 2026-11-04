@@ -1,0 +1,258 @@
+---
+config:
+  theme: default
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+    direction LR
+
+    namespace suppliers {
+        class Proveedor {
+            -int idProveedor
+            -String nombre
+            -String nit
+            -String personaContacto
+            -String email
+            -String telefono
+            -String direccion
+            -boolean activo
+            -LocalDateTime fechaRegistro
+        }
+    }
+
+    namespace inventory {
+        class Categoria {
+            -int idCategoria
+            -String nombre
+            -String descripcion
+        }
+        class Producto {
+            -int idProducto
+            -String nombre
+            -String descripcion
+            -int idCategoria
+            -UnidadMedida unidadMedida
+            -long precioBase
+        }
+        class Lote {
+            -int idLote
+            -String numeroLote
+            -int idProducto
+            -int idProveedor
+            -LocalDateTime fechaIngreso
+            -LocalDate fechaVencimiento
+            -double cantidadInicial
+            -double cantidad
+            -long precioCompra
+            -long precioVenta
+            -String pasillo
+            -String estante
+            -EstadoLote estadoLote
+        }
+        class RegistroCuarentena {
+            -int idRegistro
+            -int idLote
+            -String motivo
+            -String usuario
+            -LocalDateTime fechaRegistro
+            -boolean resuelta
+            -LocalDateTime fechaResolucion
+            -String notasResolucion
+        }
+        class InspeccionCalidad {
+            -int idInspeccion
+            -int idLote
+            -LocalDateTime fechaInspeccion
+            -boolean aprobado
+            -String nombreInspector
+            -String motivoRechazo
+            -String notas
+        }
+        class RegistroMerma {
+            -int idRegistro
+            -int idLote
+            -Integer idInspeccion
+            -double cantidadPerdida
+            -String motivo
+            -LocalDateTime fechaRegistro
+            -String usuarioRegistro
+        }
+        class EstadoLote {
+            <<enumeration>>
+            DISPONIBLE
+            PROXIMO_A_VENCER
+            VENCIDO
+            EN_CUARENTENA
+            +getId() int
+            +desdeId(int id)$ EstadoLote
+            +calcularEstadoPorFecha(LocalDate f)$ EstadoLote
+        }
+        class UnidadMedida {
+            <<enumeration>>
+            KG
+            LIBRA
+            GRAMO
+            LITRO
+            UNIDAD
+            CAJA
+            BULTO
+        }
+    }
+
+    namespace sales {
+        class Cliente {
+            -int idCliente
+            -String nombre
+            -String documento
+            -String email
+            -String telefono
+            -String direccion
+            -TipoCliente tipoCliente
+            -LocalDateTime fechaRegistro
+        }
+        class Venta {
+            -int idVenta
+            -String numeroVenta
+            -int idCliente
+            -LocalDateTime fechaVenta
+            -long subtotal
+            -long totalDescuento
+            -long totalImpuesto
+            -long montoTotal
+            -EstadoVenta estado
+            -String usuarioRegistro
+            -List~DetalleVenta~ detalles
+            +agregarDetalle(DetalleVenta d) void
+        }
+        class DetalleVenta {
+            -int idDetalle
+            -int idVenta
+            -int idLote
+            -double cantidadVendida
+            -long precioUnitario
+            -double descuentoAplicado
+            -long montoDescuento
+            -double tasaImpuesto
+            -long montoImpuesto
+            -long subtotal
+            -long totalLinea
+        }
+        class Factura {
+            -int idFactura
+            -int idVenta
+            -String numeroFactura
+            -String cufe
+            -String enlaceQr
+            -LocalDateTime fechaEmision
+            -long subtotal
+            -long totalDescuento
+            -long montoImpuesto
+            -long montoTotal
+        }
+        class TipoCliente {
+            <<enumeration>>
+            MAYORISTA
+            MINORISTA
+            +getId() int
+            +desdeId(int id)$ TipoCliente
+        }
+        class EstadoVenta {
+            <<enumeration>>
+            REGISTRADA
+            EN_PREPARACION
+            EN_TRANSITO
+            ENTREGADA
+            CANCELADA
+            +getId() int
+            +desdeId(int id)$ EstadoVenta
+        }
+    }
+
+    namespace logistics {
+        class Conductor {
+            -int idConductor
+            -String nombre
+            -String numeroLicencia
+            -String telefono
+            -String email
+            -boolean activo
+        }
+        class Vehiculo {
+            -int idVehiculo
+            -String placa
+            -String modelo
+            -double capacidad
+            -EstadoVehiculo estado
+        }
+        class RutaEntrega {
+            -int idRuta
+            -String nombreRuta
+            -LocalDateTime fechaCreacion
+            -String usuarioCreacion
+            -LocalDateTime horaSalidaReal
+            -LocalDateTime horaLlegadaReal
+            -EstadoRuta estado
+        }
+        class EstadoVehiculo {
+            <<enumeration>>
+            ACTIVO
+            INACTIVO
+            MANTENIMIENTO
+            -String texto
+            +getTexto() String
+            +desdeTexto(String t)$ EstadoVehiculo
+        }
+        class EstadoRuta {
+            <<enumeration>>
+            PLANIFICADA
+            EN_TRANSITO
+            COMPLETADA
+            CANCELADA
+            -String texto
+            +getTexto() String
+            +desdeTexto(String t)$ EstadoRuta
+        }
+    }
+
+    namespace common {
+        class InformacionEmpresa {
+            -int idEmpresa
+            -String nombreEmpresa
+            -String nit
+            -String direccion
+            -String ciudad
+            -String telefono
+            -String email
+        }
+    }
+
+    %% Proveedores e inventario
+    Proveedor "0..*" -- "0..*" Producto : catálogo
+    Categoria "1" -- "0..*" Producto : clasifica
+    Proveedor "1" -- "0..*" Lote : entrega
+    Producto "1" -- "0..*" Lote : se recibe en
+    Lote "1" -- "0..*" RegistroCuarentena : se pone en
+    Lote "1" -- "0..*" InspeccionCalidad : se inspecciona en
+    Lote "1" -- "0..*" RegistroMerma : pierde
+    InspeccionCalidad "0..1" -- "0..*" RegistroMerma : genera
+
+    %% Ventas
+    Cliente "1" -- "0..*" Venta : compra
+    Venta "1" *-- "1..*" DetalleVenta : composición
+    DetalleVenta "0..*" -- "1" Lote : sale de
+    Venta "1" -- "0..1" Factura : se factura en
+    Factura ..> InformacionEmpresa : emisor
+
+    %% Logística
+    RutaEntrega "0..*" -- "1..*" Venta : entrega
+    RutaEntrega "0..*" -- "1" Vehiculo : usa
+    RutaEntrega "0..*" -- "1" Conductor : conducida por
+
+    %% Enums
+    Producto --> UnidadMedida
+    Lote --> EstadoLote
+    Cliente --> TipoCliente
+    Venta --> EstadoVenta
+    Vehiculo --> EstadoVehiculo
+    RutaEntrega --> EstadoRuta
