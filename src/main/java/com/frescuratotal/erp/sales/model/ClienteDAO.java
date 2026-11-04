@@ -74,6 +74,29 @@ public class ClienteDAO {
         }
     }
 
+    public List<Cliente> listarPorLote(int idLote) throws SQLException{
+        List<Cliente> lista = new ArrayList<>();
+        String sql = "SELECT c.*\n" +
+                "FROM clientes c\n" +
+                "JOIN ventas v         ON v.id_cliente = c.id_cliente\n" +
+                "JOIN detalles_venta d ON d.id_venta = v.id_venta\n" +
+                "WHERE d.id_lote = ?\n" +
+                "GROUP BY c.id_cliente";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idLote);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(convertirFila(rs));
+                }
+            }
+        }
+        return lista;
+
+    }
+
 
 
 }

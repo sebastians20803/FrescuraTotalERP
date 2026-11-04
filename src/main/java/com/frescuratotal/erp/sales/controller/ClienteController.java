@@ -62,6 +62,15 @@ public class ClienteController {
 
     }
 
+    public List<Cliente> listarPorLote(int idLote){
+        try {
+            return clienteDAO.listarPorLote(idLote);
+        }catch (SQLException e){
+            System.out.println("Error al listar: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
 
 
 

@@ -8,6 +8,8 @@ import com.frescuratotal.erp.inventory.controller.RegistroCuarentenaController;
 import com.frescuratotal.erp.inventory.model.EstadoLote;
 import com.frescuratotal.erp.inventory.model.Lote;
 import com.frescuratotal.erp.inventory.model.Producto;
+import com.frescuratotal.erp.sales.controller.ClienteController;
+import com.frescuratotal.erp.sales.model.Cliente;
 import com.frescuratotal.erp.suppliers.controller.ProveedorController;
 import com.frescuratotal.erp.suppliers.model.Proveedor;
 
@@ -20,6 +22,7 @@ public class LoteVista {
     private LoteController loteController = new LoteController();
     private RegistroCuarentenaController registroCuarentenaController = new RegistroCuarentenaController();
     private InspeccionController inspeccionController = new InspeccionController();
+    private ClienteController clienteController = new ClienteController();
 
     public void mostrarMenu(){
         int opcion;
@@ -34,6 +37,7 @@ public class LoteVista {
                     4. Revisar vencimientos.
                     5. Poner lote en cuarentena.
                     6. Inspeccionar lote en cuarentena.
+                    7. Trazabilidad de un lote.
                     0. Volver
                     """);
             opcion = ScannerUtils.capturarNumero("Digite la opción que desea realizar: ");
@@ -58,6 +62,9 @@ public class LoteVista {
                 }
                 case 6->{
                     inspeccionar();
+                }
+                case 7->{
+                    trazabilidad();
                 }
                 case 0->{
                     System.out.println("Volviendo al menu anterior. ");
@@ -188,8 +195,27 @@ public class LoteVista {
         String mensaje = inspeccionController.inspeccionarLote(idLote,aprobado,nombreInspector,motivoRechazo,notas);
         System.out.println(mensaje);
 
-
-
+    }
+    private void trazabilidad(){
+        int opcionLote = ScannerUtils.capturarNumero("Digite el numero del lote que desea revisar");
+        Lote l = loteController.buscarPorId(opcionLote);
+        if (l == null){
+            System.out.println("No hay un lote con ese numero, intente de nuevo. ");
+            return;
+        }
+        System.out.println("=== LOTE ===");
+        System.out.println(l);
+        System.out.println("=== PROVIENE DEL PROVEEDOR ===");
+        System.out.println(proveedorController.buscarPorId(l.getIdProveedor()));
+        System.out.println("=== CLIENTES QUE LO RECIBIERON ===");
+        List<Cliente> listaClientes = clienteController.listarPorLote(opcionLote);
+        if (listaClientes.isEmpty()){
+            System.out.println("Este lote no se ha vendido a ningún cliente.");
+            return;
+        }
+        for (Cliente c : listaClientes){
+            System.out.println(c);
+        }
 
     }
 
